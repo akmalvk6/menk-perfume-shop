@@ -1,0 +1,20 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /products/{productId} {
+      allow read: if true;
+      // MVP admin panel needs writes. Replace this with Firebase Auth before launch.
+      allow create, update, delete: if request.time < timestamp.date(2026, 8, 1);
+    }
+
+    match /orders/{orderId} {
+      allow create: if request.resource.data.keys().hasOnly([
+        'customerName', 'customerPhone', 'items', 'totalAmount', 'address',
+        'status', 'whatsappSent', 'createdAt'
+      ]);
+      // MVP admin panel needs reads/status updates. Replace this with Firebase Auth before launch.
+      allow read, update: if request.time < timestamp.date(2026, 8, 1);
+      allow delete: if false;
+    }
+  }
+}
