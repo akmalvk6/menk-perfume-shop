@@ -15,25 +15,17 @@ export default function Home() {
 
   return (
     <>
-      <section className="relative overflow-hidden bg-ink text-white">
-        <div className="absolute inset-0">
-          <img
-            src="https://images.unsplash.com/photo-1619994403073-2cec844b8e63?auto=format&fit=crop&w=1800&q=80"
-            alt=""
-            className="h-full w-full object-cover opacity-45"
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-ink via-ink/75 to-ink/30" />
-        </div>
-        <div className="shell relative grid min-h-[560px] items-center py-16 md:grid-cols-[1.05fr_0.95fr]">
-          <div className="max-w-2xl">
-            <span className="badge border-white/20 bg-white/10 text-white">Perfume & Oudh</span>
-            <h1 className="mt-5 font-display text-5xl font-bold leading-tight tracking-normal md:text-7xl">
-              Menk.in
+      <section className="relative overflow-hidden px-4 py-8 text-white sm:py-12">
+        <div className="shell scene-shell relative min-h-[620px] overflow-hidden rounded-lg px-5 py-10 sm:px-10 lg:px-16">
+          <div className="relative z-10 mx-auto max-w-3xl pt-8 text-center sm:pt-14">
+            <span className="badge">Perfume & Oudh Atelier</span>
+            <h1 className="mt-7 font-display text-5xl font-semibold leading-[1.04] tracking-normal md:text-7xl">
+              Fragrance, suspended in motion.
             </h1>
-            <p className="mt-5 max-w-xl text-lg leading-8 text-stone-100">
-              Curated attars, oudh, and perfumes for customers in India and the Middle East, ordered directly through WhatsApp.
+            <p className="mx-auto mt-5 max-w-xl text-base leading-8 text-white/68 md:text-lg">
+              Curated attars, oudh, and perfumes with a cinematic catalog experience and instant WhatsApp ordering.
             </p>
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+            <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
               <Link to="/products" className="btn-primary bg-saffron hover:bg-saffron/90">
                 Shop catalog
                 <ArrowRight size={18} />
@@ -49,6 +41,19 @@ export default function Home() {
               </a>
             </div>
           </div>
+
+          <div className="fragrance-orbit pointer-events-none absolute inset-x-0 bottom-20 z-0 mx-auto h-56 max-w-5xl">
+            <span className="scent-disc" style={{ "--x": "3%", "--y": "56px", "--ry": "-64deg", "--rz": "-20deg", "--disc-a": "#203a3c", "--disc-b": "#ee8c42", "--speed": "4.6s" }} />
+            <span className="scent-disc" style={{ "--x": "18%", "--y": "8px", "--ry": "-35deg", "--rz": "-10deg", "--disc-a": "#7d4333", "--disc-b": "#4f1cff", "--speed": "5.4s" }} />
+            <span className="scent-disc" style={{ "--x": "34%", "--y": "14px", "--ry": "-8deg", "--rz": "4deg", "--disc-a": "#2e624c", "--disc-b": "#26334e", "--speed": "4.9s" }} />
+            <span className="perfume-bottle" style={{ "--x": "50%", "--y": "-8px", "--ry": "18deg", "--rz": "-4deg", "--speed": "5.8s" }} />
+            <span className="scent-disc" style={{ "--x": "66%", "--y": "18px", "--ry": "36deg", "--rz": "14deg", "--disc-a": "#f44263", "--disc-b": "#f5b443", "--speed": "4.8s" }} />
+            <span className="perfume-bottle" style={{ "--x": "80%", "--y": "28px", "--ry": "64deg", "--rz": "12deg", "--speed": "5.2s" }} />
+          </div>
+
+          <div className="absolute bottom-8 left-1/2 z-10 -translate-x-1/2 rounded-full border border-white/15 bg-white px-5 py-2 text-xs font-bold text-velvet shadow-neon">
+            Scroll Down
+          </div>
         </div>
       </section>
 
@@ -60,10 +65,10 @@ export default function Home() {
         ].map((item) => {
           const Icon = item.icon;
           return (
-            <div key={item.title} className="rounded-lg border border-stone-200 bg-white p-5">
-              <Icon className="text-rosewood" size={24} />
+            <div key={item.title} className="glass-panel rounded-lg p-5 transition hover:-translate-y-1">
+              <Icon className="text-cyan" size={24} />
               <h2 className="mt-4 font-bold">{item.title}</h2>
-              <p className="mt-2 text-sm leading-6 text-stone-600">{item.text}</p>
+              <p className="mt-2 text-sm leading-6 text-white/58">{item.text}</p>
             </div>
           );
         })}
@@ -72,8 +77,8 @@ export default function Home() {
       <section className="shell pb-14">
         <div className="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
           <div>
-            <p className="text-sm font-semibold uppercase tracking-wide text-saffron">Featured</p>
-            <h2 className="font-display text-3xl font-bold tracking-normal">Popular picks</h2>
+            <p className="text-sm font-semibold uppercase tracking-wide text-gold">Featured</p>
+            <h2 className="font-display text-3xl font-semibold tracking-normal">Popular picks</h2>
           </div>
           <Link to="/products" className="btn-secondary">
             View all
@@ -87,14 +92,14 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="bg-white py-12">
+      <section className="border-y border-white/10 bg-white/[0.04] py-12">
         <div className="shell flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
           <div>
-            <div className="flex items-center gap-2 text-leaf">
+            <div className="flex items-center gap-2 text-cyan">
               <ShieldCheck size={20} />
               <span className="text-sm font-semibold uppercase tracking-wide">MVP ready</span>
             </div>
-            <h2 className="mt-2 font-display text-3xl font-bold tracking-normal">
+            <h2 className="mt-2 font-display text-3xl font-semibold tracking-normal">
               Browse, order, confirm, ship.
             </h2>
           </div>

@@ -1,4 +1,4 @@
-import { Menu, MessageCircle, Search, X } from "lucide-react";
+import { Menu, MessageCircle, Search, Sparkles, X } from "lucide-react";
 import { useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { getWhatsAppNumber } from "../utils/whatsapp.js";
@@ -15,10 +15,13 @@ export default function Navbar() {
   const whatsappUrl = `https://wa.me/${getWhatsAppNumber()}`;
 
   return (
-    <header className="sticky top-0 z-40 border-b border-stone-200 bg-mist/95 backdrop-blur">
-      <nav className="shell flex h-16 items-center justify-between">
-        <Link to="/" className="font-display text-2xl font-bold tracking-normal text-rosewood">
-          Menk.in
+    <header className="sticky top-0 z-40 border-b border-white/10 bg-velvet/70 backdrop-blur-xl">
+      <nav className="shell flex h-20 items-center justify-between">
+        <Link to="/" className="group inline-flex items-center gap-3 text-white">
+          <span className="grid size-10 place-items-center rounded-md border border-white/15 bg-white/10 shadow-neon">
+            <Sparkles size={19} />
+          </span>
+          <span className="font-display text-2xl font-semibold tracking-normal">Menk.in</span>
         </Link>
         <div className="hidden items-center gap-7 md:flex">
           {links.map((link) => (
@@ -26,7 +29,7 @@ export default function Navbar() {
               key={link.to}
               to={link.to}
               className={({ isActive }) =>
-                `text-sm font-semibold ${isActive ? "text-rosewood" : "text-stone-700 hover:text-rosewood"}`
+                `text-sm font-semibold transition ${isActive ? "text-white" : "text-white/58 hover:text-white"}`
               }
             >
               {link.label}
@@ -53,14 +56,14 @@ export default function Navbar() {
         </button>
       </nav>
       {open && (
-        <div className="border-t border-stone-200 bg-mist md:hidden">
+        <div className="border-t border-white/10 bg-velvet/95 backdrop-blur md:hidden">
           <div className="shell flex flex-col gap-2 py-4">
             {links.map((link) => (
               <NavLink
                 key={link.to}
                 to={link.to}
                 onClick={() => setOpen(false)}
-                className="rounded-md px-2 py-2 text-sm font-semibold text-stone-800 hover:bg-white"
+                className="rounded-md px-2 py-2 text-sm font-semibold text-white/80 hover:bg-white/10 hover:text-white"
               >
                 {link.label}
               </NavLink>

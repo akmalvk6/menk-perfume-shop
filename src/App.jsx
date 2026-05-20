@@ -17,7 +17,7 @@ export default function App() {
   const isAdmin = location.pathname.startsWith("/admin");
 
   return (
-    <div className="min-h-screen bg-mist text-ink">
+    <div className={`min-h-screen ${isAdmin ? "admin-ui bg-mist text-ink" : "bg-velvet text-white"}`}>
       {!isAdmin && <Navbar />}
       <main>
         <Routes>

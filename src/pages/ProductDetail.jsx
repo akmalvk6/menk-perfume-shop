@@ -48,32 +48,32 @@ export default function ProductDetail() {
     }
   }
 
-  if (loading) return <section className="shell py-12 text-stone-600">Loading product...</section>;
+  if (loading) return <section className="shell py-12 text-white/60">Loading product...</section>;
   if (!product) {
     return (
-      <section className="shell py-12">
-        <p className="rounded-lg border border-stone-200 bg-white p-6">Product not found.</p>
+      <section className="shell py-12 text-white">
+        <p className="glass-panel rounded-lg p-6">Product not found.</p>
         <Link to="/products" className="btn-secondary mt-4">Back to catalog</Link>
       </section>
     );
   }
 
   return (
-    <section className="shell grid gap-8 py-10 lg:grid-cols-[1fr_0.9fr]">
-      <div className="overflow-hidden rounded-lg border border-stone-200 bg-white">
+    <section className="shell grid gap-8 py-10 text-white lg:grid-cols-[1fr_0.9fr]">
+      <div className="product-card-3d glass-panel overflow-hidden rounded-lg transition duration-500">
         <img src={product.imageUrl} alt={product.name} className="aspect-[4/3] w-full object-cover" />
       </div>
       <div>
         <span className="badge">{product.category}</span>
-        <h1 className="mt-4 font-display text-4xl font-bold tracking-normal">{product.name}</h1>
-        <p className="mt-3 text-2xl font-bold text-rosewood">{formatCurrency(product.price)}</p>
-        <p className="mt-5 leading-7 text-stone-700">{product.description}</p>
+        <h1 className="mt-4 font-display text-4xl font-semibold tracking-normal">{product.name}</h1>
+        <p className="mt-3 text-2xl font-bold text-cyan">{formatCurrency(product.price)}</p>
+        <p className="mt-5 leading-7 text-white/65">{product.description}</p>
         <div className="mt-5 flex flex-wrap gap-2">
           {product.size && <span className="badge">{product.size}</span>}
           <span className="badge">{Number(product.stock || 0)} in stock</span>
         </div>
 
-        <form onSubmit={submitOrder} className="mt-8 rounded-lg border border-stone-200 bg-white p-5">
+        <form onSubmit={submitOrder} className="glass-panel mt-8 rounded-lg p-5">
           <h2 className="text-lg font-bold">Order details</h2>
           <div className="mt-4 grid gap-4 sm:grid-cols-2">
             <label className="text-sm font-semibold">
@@ -89,7 +89,7 @@ export default function ProductDetail() {
             Address
             <textarea className="input mt-1 min-h-24" required value={form.address} onChange={(event) => setForm({ ...form, address: event.target.value })} />
           </label>
-          <div className="mt-4 flex items-center justify-between rounded-md bg-stone-50 p-3">
+          <div className="mt-4 flex items-center justify-between rounded-md border border-white/10 bg-white/10 p-3">
             <div className="flex items-center gap-2">
               <button type="button" className="btn-secondary px-3" onClick={() => setQty(Math.max(1, qty - 1))} aria-label="Decrease quantity">
                 <Minus size={16} />
@@ -105,7 +105,7 @@ export default function ProductDetail() {
             {saving ? "Saving order..." : "Save & open WhatsApp"}
           </button>
           {orderUrl && <WhatsAppButton href={orderUrl} />}
-          {message && <p className="mt-3 text-sm text-stone-600">{message}</p>}
+          {message && <p className="mt-3 text-sm text-white/60">{message}</p>}
         </form>
       </div>
     </section>

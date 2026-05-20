@@ -9,12 +9,17 @@ export default {
         rosewood: "#7f2d35",
         mist: "#f4f1eb",
         leaf: "#46624a",
+        velvet: "#100019",
+        plasma: "#f45474",
+        cyan: "#28e2ff",
+        gold: "#f0b45c",
       },
       fontFamily: {
-        display: ["Georgia", "Cambria", "serif"],
+        display: ["Inter", "ui-sans-serif", "system-ui", "sans-serif"],
       },
       boxShadow: {
         soft: "0 18px 45px rgba(21, 21, 21, 0.10)",
+        neon: "0 24px 80px rgba(244, 84, 116, 0.25)",
       },
     },
   },
