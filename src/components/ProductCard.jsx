@@ -1,42 +1,52 @@
-import { MessageCircle } from "lucide-react";
+import { ArrowRight } from "lucide-react";
+import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import { formatCurrency } from "../utils/format.js";
+import { formatCurrency } from "../utils/format";
 
 export default function ProductCard({ product }) {
   return (
-    <article className="product-card-3d glass-panel overflow-hidden rounded-lg transition duration-500">
+    <motion.article
+      whileHover={{ y: -6 }}
+      transition={{ duration: 0.3, ease: "easeOut" }}
+      className="glass-card overflow-hidden group"
+    >
       <Link to={`/products/${product.id}`} className="block">
-        <div className="relative aspect-[4/3] overflow-hidden bg-black/30">
+        {/* Image */}
+        <div className="aspect-[4/3] overflow-hidden relative">
           <img
             src={product.imageUrl}
             alt={product.name}
-            className="h-full w-full object-cover opacity-90 transition duration-700 hover:scale-110"
             loading="lazy"
+            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-velvet/85 via-transparent to-white/10" />
-          <span className="absolute left-4 top-4 rounded-full border border-white/15 bg-black/30 px-3 py-1 text-xs font-semibold text-white/80 backdrop-blur">
-            {product.category}
+          <div className="absolute inset-0 bg-gradient-to-t from-ink/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+          {product.category && (
+            <span className="absolute top-4 left-4 badge text-[10px]">
+              {product.category}
+            </span>
+          )}
+        </div>
+
+        {/* Content */}
+        <div className="p-5">
+          <h3 className="font-serif text-xl text-ink mb-1 group-hover:text-gold transition-colors duration-300">
+            {product.name}
+          </h3>
+          <p className="text-gold font-medium text-lg mb-2">
+            {formatCurrency(product.price)}
+          </p>
+          <p className="text-ink-light text-sm line-clamp-2 leading-relaxed mb-4">
+            {product.description}
+          </p>
+          <span className="inline-flex items-center gap-2 text-xs font-medium tracking-wider uppercase text-gold/60 group-hover:text-gold transition-colors">
+            View Details
+            <ArrowRight
+              size={14}
+              className="transition-transform group-hover:translate-x-1"
+            />
           </span>
         </div>
       </Link>
-      <div className="p-4">
-        <div className="flex items-start justify-between gap-3">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-wide text-gold">Signature pick</p>
-            <h3 className="mt-1 text-base font-bold text-white">{product.name}</h3>
-          </div>
-          <span className="whitespace-nowrap text-sm font-bold text-cyan">
-            {formatCurrency(product.price)}
-          </span>
-        </div>
-        <p className="mt-3 line-clamp-2 text-sm leading-6 text-white/58">
-          {product.description}
-        </p>
-        <Link to={`/products/${product.id}`} className="btn-secondary mt-4 w-full">
-          <MessageCircle size={17} />
-          View & Order
-        </Link>
-      </div>
-    </article>
+    </motion.article>
   );
 }

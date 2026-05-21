@@ -1,111 +1,269 @@
-import { ArrowRight, MessageCircle, ShieldCheck, Sparkles, Truck } from "lucide-react";
+import { ArrowRight } from "lucide-react";
+import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import ProductCard from "../components/ProductCard.jsx";
-import { fallbackProducts } from "../data/fallbackProducts.js";
-import { getFeaturedProducts } from "../firebase/products.js";
-import { getWhatsAppNumber } from "../utils/whatsapp.js";
+import AnimatedSection from "../components/AnimatedSection";
+import ParticleCanvas from "../components/ParticleCanvas";
+import ProductCard from "../components/ProductCard";
+import { fallbackProducts } from "../data/fallbackProducts";
+import { getFeaturedProducts } from "../firebase/products";
+
+/* ─── Testimonials Data ─── */
+
+const testimonials = [
+  {
+    id: 1,
+    quote:
+      "The Rose Oudh Attar is simply exquisite. I've never experienced a fragrance that lingers so beautifully throughout the entire day.",
+    name: "Ayesha R.",
+    title: "Loyal Customer",
+  },
+  {
+    id: 2,
+    quote:
+      "Menk's collection feels personal and curated. Every bottle tells a story. The WhatsApp ordering makes it effortless.",
+    name: "Faizan K.",
+    title: "Fragrance Enthusiast",
+  },
+  {
+    id: 3,
+    quote:
+      "Finally, a brand that understands luxury without the pretension. The quality of the oudh is unmatched at this price.",
+    name: "Priya M.",
+    title: "First-Time Buyer",
+  },
+];
+
+/* ─── Animation Variants ─── */
+
+const stagger = {
+  visible: { transition: { staggerChildren: 0.15 } },
+};
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 30 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] },
+  },
+};
+
+/* ─── Home Page ─── */
 
 export default function Home() {
   const [featured, setFeatured] = useState(fallbackProducts);
 
   useEffect(() => {
-    getFeaturedProducts().then(setFeatured).catch(() => setFeatured(fallbackProducts));
+    getFeaturedProducts()
+      .then((data) => data.length > 0 && setFeatured(data))
+      .catch(() => setFeatured(fallbackProducts));
   }, []);
 
   return (
     <>
-      <section className="relative overflow-hidden px-4 py-8 text-white sm:py-12">
-        <div className="shell scene-shell relative min-h-[620px] overflow-hidden rounded-lg px-5 py-10 sm:px-10 lg:px-16">
-          <div className="relative z-10 mx-auto max-w-3xl pt-8 text-center sm:pt-14">
-            <span className="badge">Perfume & Oudh Atelier</span>
-            <h1 className="mt-7 font-display text-5xl font-semibold leading-[1.04] tracking-normal md:text-7xl">
-              Fragrance, suspended in motion.
+      {/* ═══ Hero ═══ */}
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+        <ParticleCanvas />
+
+        <div className="relative z-10 text-center px-6 max-w-3xl mx-auto">
+          {/* Logo */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.92 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 1.1, ease: [0.25, 0.46, 0.45, 0.94] }}
+          >
+            <span className="logo-shimmer">
+              <span className="logo-text text-7xl md:text-8xl lg:text-9xl">
+                menk
+              </span>
+            </span>
+          </motion.div>
+
+          {/* Tagline */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.5, ease: "easeOut" }}
+          >
+            <div className="gold-line mt-8 mb-6" />
+            <h1 className="font-serif text-3xl md:text-4xl lg:text-5xl text-ink font-light leading-tight tracking-tight">
+              Crafted for Presence
             </h1>
-            <p className="mx-auto mt-5 max-w-xl text-base leading-8 text-white/68 md:text-lg">
-              Curated attars, oudh, and perfumes with a cinematic catalog experience and instant WhatsApp ordering.
+            <p className="mt-4 text-ink-light text-base md:text-lg max-w-md mx-auto leading-relaxed">
+              Discover our curated collection of luxury perfumes, attars & oudh
+              — each crafted for those who leave a lasting impression.
             </p>
-            <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
-              <Link to="/products" className="btn-primary bg-saffron hover:bg-saffron/90">
-                Shop catalog
-                <ArrowRight size={18} />
-              </Link>
-              <a
-                href={`https://wa.me/${getWhatsAppNumber()}`}
-                target="_blank"
-                rel="noreferrer"
-                className="btn border border-white/30 bg-white/10 text-white hover:bg-white/20"
-              >
-                <MessageCircle size={18} />
-                Chat on WhatsApp
-              </a>
-            </div>
-          </div>
+          </motion.div>
 
-          <div className="fragrance-orbit pointer-events-none absolute inset-x-0 bottom-20 z-0 mx-auto h-56 max-w-5xl">
-            <span className="scent-disc" style={{ "--x": "3%", "--y": "56px", "--ry": "-64deg", "--rz": "-20deg", "--disc-a": "#203a3c", "--disc-b": "#ee8c42", "--speed": "4.6s" }} />
-            <span className="scent-disc" style={{ "--x": "18%", "--y": "8px", "--ry": "-35deg", "--rz": "-10deg", "--disc-a": "#7d4333", "--disc-b": "#4f1cff", "--speed": "5.4s" }} />
-            <span className="scent-disc" style={{ "--x": "34%", "--y": "14px", "--ry": "-8deg", "--rz": "4deg", "--disc-a": "#2e624c", "--disc-b": "#26334e", "--speed": "4.9s" }} />
-            <span className="perfume-bottle" style={{ "--x": "50%", "--y": "-8px", "--ry": "18deg", "--rz": "-4deg", "--speed": "5.8s" }} />
-            <span className="scent-disc" style={{ "--x": "66%", "--y": "18px", "--ry": "36deg", "--rz": "14deg", "--disc-a": "#f44263", "--disc-b": "#f5b443", "--speed": "4.8s" }} />
-            <span className="perfume-bottle" style={{ "--x": "80%", "--y": "28px", "--ry": "64deg", "--rz": "12deg", "--speed": "5.2s" }} />
-          </div>
-
-          <div className="absolute bottom-8 left-1/2 z-10 -translate-x-1/2 rounded-full border border-white/15 bg-white px-5 py-2 text-xs font-bold text-velvet shadow-neon">
-            Scroll Down
-          </div>
+          {/* CTA Buttons */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.8, ease: "easeOut" }}
+            className="mt-10 flex flex-col sm:flex-row gap-4 justify-center"
+          >
+            <Link to="/products" className="btn-primary">
+              Shop Collection
+            </Link>
+            <Link to="/products" className="btn-outline-gold">
+              Discover Fragrance
+            </Link>
+          </motion.div>
         </div>
+
+        {/* Scroll Indicator */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.6, duration: 1 }}
+          className="absolute bottom-8 left-1/2 -translate-x-1/2"
+        >
+          <div className="flex flex-col items-center gap-2 text-ink-light/30">
+            <span className="text-[10px] tracking-[0.3em] uppercase">
+              Scroll
+            </span>
+            <div className="w-px h-8 bg-gradient-to-b from-gold/30 to-transparent" />
+          </div>
+        </motion.div>
       </section>
 
-      <section className="shell grid gap-4 py-10 md:grid-cols-3">
-        {[
-          { icon: Sparkles, title: "Curated fragrance", text: "Focused selection across attar, oudh, and perfume." },
-          { icon: MessageCircle, title: "WhatsApp orders", text: "Customers send pre-filled order details instantly." },
-          { icon: Truck, title: "Manual fulfilment", text: "Confirm payment and delivery directly with each buyer." },
-        ].map((item) => {
-          const Icon = item.icon;
-          return (
-            <div key={item.title} className="glass-panel rounded-lg p-5 transition hover:-translate-y-1">
-              <Icon className="text-cyan" size={24} />
-              <h2 className="mt-4 font-bold">{item.title}</h2>
-              <p className="mt-2 text-sm leading-6 text-white/58">{item.text}</p>
-            </div>
-          );
-        })}
-      </section>
-
-      <section className="shell pb-14">
-        <div className="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
-          <div>
-            <p className="text-sm font-semibold uppercase tracking-wide text-gold">Featured</p>
-            <h2 className="font-display text-3xl font-semibold tracking-normal">Popular picks</h2>
-          </div>
-          <Link to="/products" className="btn-secondary">
-            View all
-            <ArrowRight size={17} />
-          </Link>
-        </div>
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {featured.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
-        </div>
-      </section>
-
-      <section className="border-y border-white/10 bg-white/[0.04] py-12">
-        <div className="shell flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
-          <div>
-            <div className="flex items-center gap-2 text-cyan">
-              <ShieldCheck size={20} />
-              <span className="text-sm font-semibold uppercase tracking-wide">MVP ready</span>
-            </div>
-            <h2 className="mt-2 font-display text-3xl font-semibold tracking-normal">
-              Browse, order, confirm, ship.
+      {/* ═══ Featured Perfumes ═══ */}
+      <section className="py-24 md:py-32">
+        <div className="shell">
+          <AnimatedSection className="text-center mb-16">
+            <span className="badge mb-4">Collection</span>
+            <h2 className="font-serif text-4xl md:text-5xl text-ink font-light mt-4">
+              Featured Fragrances
             </h2>
+            <div className="gold-line mt-6" />
+          </AnimatedSection>
+
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={stagger}
+            className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3"
+          >
+            {featured.map((product) => (
+              <motion.div key={product.id} variants={fadeUp}>
+                <ProductCard product={product} />
+              </motion.div>
+            ))}
+          </motion.div>
+
+          <AnimatedSection className="text-center mt-12" delay={0.3}>
+            <Link
+              to="/products"
+              className="inline-flex items-center gap-2 text-sm font-medium tracking-wider uppercase text-gold hover:text-gold-dark transition-colors group"
+            >
+              View All Collections
+              <ArrowRight
+                size={16}
+                className="transition-transform group-hover:translate-x-1"
+              />
+            </Link>
+          </AnimatedSection>
+        </div>
+      </section>
+
+      {/* ═══ Brand Story ═══ */}
+      <section className="py-24 md:py-32 bg-warm-white">
+        <div className="shell">
+          <div className="grid gap-16 lg:grid-cols-2 items-center">
+            <AnimatedSection>
+              <span className="badge mb-6">Our Story</span>
+              <h2 className="font-serif text-4xl md:text-5xl text-ink font-light leading-tight mt-4">
+                Where Tradition
+                <br />
+                Meets Elegance
+              </h2>
+              <div
+                className="gold-line mx-0"
+                style={{ margin: "24px 0", marginLeft: 0 }}
+              />
+            </AnimatedSection>
+
+            <AnimatedSection delay={0.2}>
+              <p className="text-ink-light leading-relaxed text-lg font-light mb-6">
+                At Menk, we believe fragrance is an art form — a silent
+                expression of personality that speaks before words do. Our
+                collection is hand-curated from the finest attars, oudhs, and
+                perfumes.
+              </p>
+              <p className="text-ink-light leading-relaxed text-lg font-light mb-8">
+                Every scent in our catalog is selected for its character,
+                longevity, and the story it tells. We bring you a personal
+                buying experience — browse our catalog, connect on WhatsApp, and
+                let us guide you to your signature scent.
+              </p>
+              <Link to="/about" className="btn-outline-gold">
+                Learn More
+              </Link>
+            </AnimatedSection>
           </div>
-          <Link to="/contact" className="btn-primary">
-            Contact shop
-          </Link>
+        </div>
+      </section>
+
+      {/* ═══ Testimonials ═══ */}
+      <section className="py-24 md:py-32">
+        <div className="shell">
+          <AnimatedSection className="text-center mb-16">
+            <span className="badge mb-4">Testimonials</span>
+            <h2 className="font-serif text-4xl md:text-5xl text-ink font-light mt-4">
+              What Our Clients Say
+            </h2>
+            <div className="gold-line mt-6" />
+          </AnimatedSection>
+
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={stagger}
+            className="grid gap-8 md:grid-cols-3"
+          >
+            {testimonials.map((t) => (
+              <motion.div key={t.id} variants={fadeUp}>
+                <div className="glass-card p-8 text-center h-full flex flex-col">
+                  <span className="quote-icon">&ldquo;</span>
+                  <p className="text-ink-light leading-relaxed text-sm flex-1 -mt-2">
+                    {t.quote}
+                  </p>
+                  <div className="mt-6 pt-6 border-t border-gold/10">
+                    <p className="font-serif text-lg text-ink">{t.name}</p>
+                    <p className="text-xs text-gold tracking-wider uppercase mt-1">
+                      {t.title}
+                    </p>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ═══ CTA ═══ */}
+      <section className="py-24 md:py-32 bg-ink text-white">
+        <div className="shell text-center max-w-2xl mx-auto">
+          <AnimatedSection>
+            <h2 className="font-serif text-4xl md:text-5xl font-light leading-tight">
+              Experience the Essence
+            </h2>
+            <p className="mt-4 text-white/45 text-lg font-light">
+              Find the fragrance that defines you. Browse our curated collection
+              and place your order with ease.
+            </p>
+            <div className="mt-10">
+              <Link
+                to="/products"
+                className="btn bg-gold text-white border border-gold hover:bg-gold-dark hover:-translate-y-0.5 transition-all shadow-gold"
+              >
+                Shop Collection
+              </Link>
+            </div>
+          </AnimatedSection>
         </div>
       </section>
     </>

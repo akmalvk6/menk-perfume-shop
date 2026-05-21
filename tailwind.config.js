@@ -4,22 +4,30 @@ export default {
   theme: {
     extend: {
       colors: {
-        ink: "#151515",
-        saffron: "#c47d2b",
-        rosewood: "#7f2d35",
+        /* Luxury customer palette */
+        cream: "#F7F5F2",
+        gold: "#C9A13B",
+        "gold-dark": "#B88A1D",
+        "gold-light": "#D4B44A",
+        ink: "#1A1A1A",
+        "ink-light": "#4A4A4A",
+        "warm-white": "#FEFDFB",
+        /* Admin palette (preserved) */
         mist: "#f4f1eb",
-        leaf: "#46624a",
+        rosewood: "#7f2d35",
         velvet: "#100019",
-        plasma: "#f45474",
-        cyan: "#28e2ff",
-        gold: "#f0b45c",
       },
       fontFamily: {
-        display: ["Inter", "ui-sans-serif", "system-ui", "sans-serif"],
+        serif: ['"Cormorant Garamond"', "Georgia", '"Times New Roman"', "serif"],
+        sans: ["Inter", "ui-sans-serif", "system-ui", "sans-serif"],
+        logo: ["Outfit", "Inter", "sans-serif"],
       },
       boxShadow: {
-        soft: "0 18px 45px rgba(21, 21, 21, 0.10)",
-        neon: "0 24px 80px rgba(244, 84, 116, 0.25)",
+        soft: "0 4px 30px rgba(0, 0, 0, 0.05)",
+        card: "0 8px 40px rgba(0, 0, 0, 0.06)",
+        "card-hover": "0 20px 60px rgba(0, 0, 0, 0.1)",
+        gold: "0 4px 30px rgba(201, 161, 59, 0.15)",
+        "gold-hover": "0 8px 40px rgba(201, 161, 59, 0.25)",
       },
     },
   },

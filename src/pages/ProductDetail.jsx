@@ -1,18 +1,24 @@
-import { Minus, Plus } from "lucide-react";
+import { ArrowLeft, Minus, Plus } from "lucide-react";
+import { motion } from "framer-motion";
 import { useEffect, useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import WhatsAppButton from "../components/WhatsAppButton.jsx";
-import { createOrder } from "../firebase/orders.js";
-import { getProduct } from "../firebase/products.js";
-import { formatCurrency } from "../utils/format.js";
-import { buildWhatsAppUrl } from "../utils/whatsapp.js";
+import AnimatedSection from "../components/AnimatedSection";
+import WhatsAppButton from "../components/WhatsAppButton";
+import { createOrder } from "../firebase/orders";
+import { getProduct } from "../firebase/products";
+import { formatCurrency } from "../utils/format";
+import { buildWhatsAppUrl } from "../utils/whatsapp";
 
 export default function ProductDetail() {
   const { productId } = useParams();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [qty, setQty] = useState(1);
-  const [form, setForm] = useState({ customerName: "", customerPhone: "", address: "" });
+  const [form, setForm] = useState({
+    customerName: "",
+    customerPhone: "",
+    address: "",
+  });
   const [saving, setSaving] = useState(false);
   const [orderUrl, setOrderUrl] = useState("");
   const [message, setMessage] = useState("");
@@ -23,91 +29,223 @@ export default function ProductDetail() {
       .finally(() => setLoading(false));
   }, [productId]);
 
-  const total = useMemo(() => Number(product?.price || 0) * qty, [product, qty]);
+  const total = useMemo(
+    () => (product ? product.price * qty : 0),
+    [product, qty],
+  );
 
-  async function submitOrder(event) {
-    event.preventDefault();
-    if (!product) return;
+  async function submitOrder(e) {
+    e.preventDefault();
     setSaving(true);
     setMessage("");
 
-    const items = [{ productId: product.id, name: product.name, qty, price: Number(product.price) }];
-    const order = { ...form, items, totalAmount: total, address: form.address };
-    const whatsappUrl = buildWhatsAppUrl(order);
+    const items = [
+      { productId, name: product.name, qty, price: product.price },
+    ];
+    const order = {
+      ...form,
+      items,
+      totalAmount: total,
+      address: form.address,
+      status: "pending",
+      whatsappSent: true,
+      createdAt: new Date(),
+    };
+
+    const url = buildWhatsAppUrl(order);
 
     try {
       await createOrder(order);
-      setOrderUrl(whatsappUrl);
-      window.open(whatsappUrl, "_blank", "noopener,noreferrer");
-      setMessage("Order saved. WhatsApp should open with the prepared message.");
-    } catch (error) {
-      setMessage(error.message || "Could not save order. You can still send it on WhatsApp.");
-      setOrderUrl(whatsappUrl);
+      setOrderUrl(url);
+      window.open(url, "_blank");
+      setMessage("Order saved! Confirm on WhatsApp.");
+    } catch {
+      setOrderUrl(url);
+      setMessage("Could not save — please use WhatsApp link below.");
     } finally {
       setSaving(false);
     }
   }
 
-  if (loading) return <section className="shell py-12 text-white/60">Loading product...</section>;
+  /* Loading State */
+  if (loading) {
+    return (
+      <div className="pt-28 pb-20 text-center">
+        <div className="inline-block w-8 h-8 border-2 border-gold/20 border-t-gold rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  /* Not Found */
   if (!product) {
     return (
-      <section className="shell py-12 text-white">
-        <p className="glass-panel rounded-lg p-6">Product not found.</p>
-        <Link to="/products" className="btn-secondary mt-4">Back to catalog</Link>
-      </section>
+      <div className="pt-28 pb-20 text-center shell">
+        <p className="font-serif text-2xl text-ink mb-4">Product not found</p>
+        <Link to="/products" className="btn-outline-gold">
+          <ArrowLeft size={16} /> Back to Collection
+        </Link>
+      </div>
     );
   }
 
   return (
-    <section className="shell grid gap-8 py-10 text-white lg:grid-cols-[1fr_0.9fr]">
-      <div className="product-card-3d glass-panel overflow-hidden rounded-lg transition duration-500">
-        <img src={product.imageUrl} alt={product.name} className="aspect-[4/3] w-full object-cover" />
-      </div>
-      <div>
-        <span className="badge">{product.category}</span>
-        <h1 className="mt-4 font-display text-4xl font-semibold tracking-normal">{product.name}</h1>
-        <p className="mt-3 text-2xl font-bold text-cyan">{formatCurrency(product.price)}</p>
-        <p className="mt-5 leading-7 text-white/65">{product.description}</p>
-        <div className="mt-5 flex flex-wrap gap-2">
-          {product.size && <span className="badge">{product.size}</span>}
-          <span className="badge">{Number(product.stock || 0)} in stock</span>
-        </div>
+    <div className="pt-28 pb-20">
+      <div className="shell">
+        {/* Breadcrumb */}
+        <AnimatedSection className="mb-8">
+          <Link
+            to="/products"
+            className="inline-flex items-center gap-2 text-sm text-ink-light hover:text-gold transition-colors"
+          >
+            <ArrowLeft size={16} />
+            Back to Collection
+          </Link>
+        </AnimatedSection>
 
-        <form onSubmit={submitOrder} className="glass-panel mt-8 rounded-lg p-5">
-          <h2 className="text-lg font-bold">Order details</h2>
-          <div className="mt-4 grid gap-4 sm:grid-cols-2">
-            <label className="text-sm font-semibold">
-              Name
-              <input className="input mt-1" required value={form.customerName} onChange={(event) => setForm({ ...form, customerName: event.target.value })} />
-            </label>
-            <label className="text-sm font-semibold">
-              Phone
-              <input className="input mt-1" required value={form.customerPhone} onChange={(event) => setForm({ ...form, customerPhone: event.target.value })} />
-            </label>
-          </div>
-          <label className="mt-4 block text-sm font-semibold">
-            Address
-            <textarea className="input mt-1 min-h-24" required value={form.address} onChange={(event) => setForm({ ...form, address: event.target.value })} />
-          </label>
-          <div className="mt-4 flex items-center justify-between rounded-md border border-white/10 bg-white/10 p-3">
-            <div className="flex items-center gap-2">
-              <button type="button" className="btn-secondary px-3" onClick={() => setQty(Math.max(1, qty - 1))} aria-label="Decrease quantity">
-                <Minus size={16} />
-              </button>
-              <span className="w-8 text-center font-bold">{qty}</span>
-              <button type="button" className="btn-secondary px-3" onClick={() => setQty(qty + 1)} aria-label="Increase quantity">
-                <Plus size={16} />
-              </button>
+        <div className="grid gap-12 lg:grid-cols-[1.1fr_0.9fr]">
+          {/* Product Image */}
+          <AnimatedSection>
+            <motion.div
+              whileHover={{ scale: 1.02 }}
+              transition={{ duration: 0.4 }}
+              className="glass-card overflow-hidden"
+            >
+              <img
+                src={product.imageUrl}
+                alt={product.name}
+                className="w-full aspect-[4/3] object-cover"
+              />
+            </motion.div>
+          </AnimatedSection>
+
+          {/* Product Info + Order Form */}
+          <AnimatedSection delay={0.2}>
+            <div className="space-y-5">
+              {product.category && (
+                <span className="badge">{product.category}</span>
+              )}
+
+              <h1 className="font-serif text-3xl md:text-4xl text-ink font-light">
+                {product.name}
+              </h1>
+
+              <p className="text-3xl font-serif text-gold">
+                {formatCurrency(product.price)}
+              </p>
+
+              <p className="text-ink-light leading-relaxed">
+                {product.description}
+              </p>
+
+              <div className="flex flex-wrap gap-3">
+                {product.size && (
+                  <span className="badge">{product.size}</span>
+                )}
+                {product.stock > 0 && (
+                  <span className="badge">{product.stock} in stock</span>
+                )}
+              </div>
+
+              {/* Order Form */}
+              <form
+                onSubmit={submitOrder}
+                className="glass-card p-6 space-y-4 mt-2"
+              >
+                <h3 className="font-serif text-xl text-ink">
+                  Place Your Order
+                </h3>
+
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <input
+                    required
+                    placeholder="Your name"
+                    value={form.customerName}
+                    onChange={(e) =>
+                      setForm({ ...form, customerName: e.target.value })
+                    }
+                    className="input"
+                  />
+                  <input
+                    required
+                    type="tel"
+                    placeholder="Phone number"
+                    value={form.customerPhone}
+                    onChange={(e) =>
+                      setForm({ ...form, customerPhone: e.target.value })
+                    }
+                    className="input"
+                  />
+                </div>
+
+                <textarea
+                  required
+                  rows={2}
+                  placeholder="Delivery address"
+                  value={form.address}
+                  onChange={(e) =>
+                    setForm({ ...form, address: e.target.value })
+                  }
+                  className="input resize-none"
+                />
+
+                {/* Quantity Stepper */}
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-ink-light">Quantity</span>
+                  <div className="flex items-center gap-3">
+                    <button
+                      type="button"
+                      onClick={() => setQty(Math.max(1, qty - 1))}
+                      className="w-9 h-9 rounded-full border border-ink/10 flex items-center justify-center text-ink-light hover:border-gold hover:text-gold transition-colors"
+                    >
+                      <Minus size={14} />
+                    </button>
+                    <span className="w-8 text-center font-medium text-ink">
+                      {qty}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setQty(qty + 1)}
+                      className="w-9 h-9 rounded-full border border-ink/10 flex items-center justify-center text-ink-light hover:border-gold hover:text-gold transition-colors"
+                    >
+                      <Plus size={14} />
+                    </button>
+                  </div>
+                </div>
+
+                {/* Total */}
+                <div className="flex items-center justify-between pt-4 border-t border-ink/5">
+                  <span className="text-sm text-ink-light">Total</span>
+                  <span className="font-serif text-2xl text-gold">
+                    {formatCurrency(total)}
+                  </span>
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={saving}
+                  className="btn-primary w-full justify-center"
+                >
+                  {saving ? "Saving..." : "Save & Open WhatsApp"}
+                </button>
+
+                {orderUrl && <WhatsAppButton href={orderUrl} />}
+
+                {message && (
+                  <p
+                    className={`text-sm text-center ${
+                      message.includes("Could not")
+                        ? "text-red-500"
+                        : "text-green-600"
+                    }`}
+                  >
+                    {message}
+                  </p>
+                )}
+              </form>
             </div>
-            <strong>{formatCurrency(total)}</strong>
-          </div>
-          <button type="submit" className="btn-primary mt-5 w-full" disabled={saving}>
-            {saving ? "Saving order..." : "Save & open WhatsApp"}
-          </button>
-          {orderUrl && <WhatsAppButton href={orderUrl} />}
-          {message && <p className="mt-3 text-sm text-white/60">{message}</p>}
-        </form>
+          </AnimatedSection>
+        </div>
       </div>
-    </section>
+    </div>
   );
 }

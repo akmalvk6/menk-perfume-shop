@@ -2,20 +2,31 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ═══════════════════════════════════════════
+   Menk.in — Luxury Design System
+   ═══════════════════════════════════════════ */
+
 :root {
-  color-scheme: dark;
-  font-family:
-    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-    sans-serif;
+  color-scheme: light;
+  --gold: #c9a13b;
+  --gold-dark: #b88a1d;
+  --cream: #f7f5f2;
+  --ink: #1a1a1a;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, sans-serif;
+}
+
+* {
+  scroll-behavior: smooth;
 }
 
 body {
   margin: 0;
   min-width: 320px;
-  background:
-    radial-gradient(circle at 50% 12%, rgba(75, 19, 104, 0.72), transparent 34rem),
-    linear-gradient(180deg, #13001f 0%, #07000c 54%, #110019 100%);
+  background: var(--cream);
+  color: var(--ink);
   overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 button,
@@ -25,114 +36,200 @@ textarea {
   font: inherit;
 }
 
+/* ─── Layout Container ─── */
+
 .shell {
-  width: min(1120px, calc(100% - 32px));
+  width: min(1200px, calc(100% - 48px));
   margin-inline: auto;
 }
 
+/* ─── Focus Ring ─── */
+
 .focus-ring {
-  @apply focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan focus-visible:ring-offset-2 focus-visible:ring-offset-velvet;
+  @apply focus:outline-none focus-visible:ring-2 focus-visible:ring-gold/40 focus-visible:ring-offset-2 focus-visible:ring-offset-cream;
 }
+
+/* ─── Form Inputs ─── */
 
 .input {
-  @apply w-full rounded-md border border-white/15 bg-white/10 px-3 py-2 text-sm text-white shadow-sm outline-none placeholder:text-white/40 focus-ring;
+  @apply w-full rounded-lg border border-ink/10 bg-white px-4 py-3 text-sm text-ink shadow-sm outline-none transition-all duration-300 focus-ring;
 }
 
+.input::placeholder {
+  color: rgba(74, 74, 74, 0.4);
+}
+
+.input:focus {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(201, 161, 59, 0.08);
+}
+
+/* ─── Buttons ─── */
+
 .btn {
-  @apply inline-flex items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-semibold transition focus-ring disabled:cursor-not-allowed disabled:opacity-60;
+  @apply inline-flex items-center justify-center gap-2 rounded-lg px-6 py-3 text-sm font-medium transition-all duration-300 focus-ring disabled:cursor-not-allowed disabled:opacity-50;
+  letter-spacing: 0.06em;
 }
 
 .btn-primary {
-  @apply btn border border-white/15 bg-white text-velvet shadow-neon hover:-translate-y-0.5 hover:bg-white/90;
+  @apply btn border border-gold bg-gold text-white;
+}
+
+.btn-primary:hover {
+  background: var(--gold-dark);
+  border-color: var(--gold-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(201, 161, 59, 0.3);
 }
 
 .btn-secondary {
-  @apply btn border border-white/15 bg-white/10 text-white backdrop-blur hover:-translate-y-0.5 hover:border-cyan/60 hover:bg-white/15;
+  @apply btn border border-ink/15 bg-transparent text-ink;
 }
+
+.btn-secondary:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+  transform: translateY(-2px);
+}
+
+.btn-outline-gold {
+  @apply btn border border-gold/30 bg-transparent text-gold;
+}
+
+.btn-outline-gold:hover {
+  background: var(--gold);
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(201, 161, 59, 0.3);
+}
+
+/* ─── Badge ─── */
 
 .badge {
-  @apply inline-flex items-center rounded-full border border-white/15 bg-white/10 px-3 py-1 text-xs font-semibold text-white/80 backdrop-blur;
+  @apply inline-flex items-center rounded-full border border-gold/20 bg-gold/5 px-4 py-1.5 text-xs font-medium text-gold;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
 }
 
-.scene-shell {
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  background:
-    linear-gradient(120deg, rgba(255, 255, 255, 0.08), transparent 28%),
-    radial-gradient(ellipse at 50% 55%, rgba(86, 18, 127, 0.64), transparent 34rem),
-    linear-gradient(180deg, rgba(7, 0, 13, 0.98), rgba(18, 0, 29, 0.94));
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.16),
-    0 34px 110px rgba(0, 0, 0, 0.42);
+/* ─── Glass Card ─── */
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(201, 161, 59, 0.1);
+  border-radius: 16px;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.05);
+  backdrop-filter: blur(20px);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.glass-panel {
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  background: rgba(255, 255, 255, 0.07);
-  box-shadow: 0 18px 70px rgba(0, 0, 0, 0.24);
-  backdrop-filter: blur(18px);
+.glass-card:hover {
+  border-color: rgba(201, 161, 59, 0.25);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
 }
 
-.fragrance-orbit {
-  perspective: 900px;
-  transform-style: preserve-3d;
+/* ─── Logo ─── */
+
+.logo-text {
+  font-family: "Outfit", "Inter", sans-serif;
+  font-weight: 400;
+  color: var(--gold);
+  letter-spacing: 0.06em;
+  transition: all 0.3s ease;
 }
 
-.scent-disc {
-  position: absolute;
-  width: clamp(4.5rem, 10vw, 7.5rem);
-  aspect-ratio: 1.6;
-  border-radius: 999px;
-  background:
-    radial-gradient(circle at 30% 28%, rgba(255, 255, 255, 0.28), transparent 18%),
-    linear-gradient(135deg, var(--disc-a), rgba(6, 7, 11, 0.96) 48%, var(--disc-b));
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  filter: drop-shadow(0 22px 24px rgba(0, 0, 0, 0.42));
-  transform: translate3d(var(--x), var(--y), 0) rotateX(62deg) rotateY(var(--ry)) rotateZ(var(--rz));
-  animation: float-disc var(--speed) ease-in-out infinite alternate;
+.logo-text:hover {
+  filter: brightness(1.1);
 }
 
-.scent-disc::after {
+.logo-shimmer {
+  position: relative;
+  display: inline-block;
+}
+
+.logo-shimmer::after {
   content: "";
   position: absolute;
-  inset: 7% 9%;
-  border-radius: inherit;
-  border-right: 3px solid rgba(40, 226, 255, 0.58);
-  border-bottom: 2px solid rgba(240, 180, 92, 0.54);
-  opacity: 0.8;
+  inset: -4px -8px;
+  border-radius: 8px;
+  background: linear-gradient(
+    120deg,
+    transparent 30%,
+    rgba(201, 161, 59, 0.12) 50%,
+    transparent 70%
+  );
+  background-size: 200% 100%;
+  animation: shimmer-sweep 3s ease-in-out infinite;
+  pointer-events: none;
 }
 
-.perfume-bottle {
-  position: absolute;
-  width: clamp(4.2rem, 8vw, 6.8rem);
-  aspect-ratio: 0.62;
-  border-radius: 38% 38% 12% 12%;
-  background:
-    linear-gradient(90deg, rgba(255, 255, 255, 0.24), transparent 18%),
-    linear-gradient(160deg, rgba(40, 226, 255, 0.35), rgba(244, 84, 116, 0.22) 42%, rgba(3, 3, 8, 0.96));
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  filter: drop-shadow(0 26px 30px rgba(0, 0, 0, 0.48));
-  transform: translate3d(var(--x), var(--y), 0) rotateX(18deg) rotateY(var(--ry)) rotateZ(var(--rz));
-  animation: float-bottle var(--speed) ease-in-out infinite alternate;
+/* ─── Gold Navigation Underline ─── */
+
+.nav-link {
+  position: relative;
+  color: var(--ink);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-decoration: none;
+  padding: 4px 0;
+  transition: color 0.3s ease;
 }
 
-.perfume-bottle::before {
+.nav-link::after {
   content: "";
   position: absolute;
-  left: 35%;
-  top: -18%;
-  width: 30%;
-  height: 22%;
-  border-radius: 5px 5px 2px 2px;
-  background: linear-gradient(180deg, #f7e6c8, #5c4c70);
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 1.5px;
+  background: var(--gold);
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.product-card-3d {
-  transform-style: preserve-3d;
+.nav-link:hover,
+.nav-link.active {
+  color: var(--gold);
 }
 
-.product-card-3d:hover {
-  transform: translateY(-8px) rotateX(3deg) rotateY(-3deg);
+.nav-link:hover::after,
+.nav-link.active::after {
+  width: 100%;
 }
+
+/* ─── Gold Divider Line ─── */
+
+.gold-line {
+  width: 60px;
+  height: 1.5px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  margin: 0 auto;
+}
+
+/* ─── Quote Icon ─── */
+
+.quote-icon {
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 4rem;
+  line-height: 1;
+  color: var(--gold);
+  opacity: 0.3;
+}
+
+/* ─── Keyframes ─── */
+
+@keyframes shimmer-sweep {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* ═══════════════════════════════════════════
+   Admin UI Overrides (unchanged)
+   ═══════════════════════════════════════════ */
 
 .admin-ui .input {
   border-color: rgb(214 211 209);
@@ -140,10 +237,23 @@ textarea {
   color: #151515;
 }
 
+.admin-ui .input:focus {
+  border-color: #7f2d35;
+  box-shadow: 0 0 0 3px rgba(127, 45, 53, 0.1);
+}
+
 .admin-ui .btn-primary {
   border-color: transparent;
   background: #7f2d35;
   color: #fff;
+  box-shadow: none;
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+.admin-ui .btn-primary:hover {
+  background: #6b2530;
+  transform: none;
   box-shadow: none;
 }
 
@@ -152,6 +262,14 @@ textarea {
   background: #fff;
   color: #151515;
   box-shadow: none;
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+.admin-ui .btn-secondary:hover {
+  transform: none;
+  color: #151515;
+  border-color: rgb(214 211 209);
 }
 
 .admin-ui .badge {
@@ -159,25 +277,11 @@ textarea {
   background: #fff;
   color: rgb(68 64 60);
   backdrop-filter: none;
+  text-transform: none;
+  letter-spacing: normal;
 }
 
-@keyframes float-disc {
-  from {
-    translate: 0 -8px;
-  }
-  to {
-    translate: 0 16px;
-  }
-}
-
-@keyframes float-bottle {
-  from {
-    translate: 0 10px;
-  }
-  to {
-    translate: 0 -12px;
-  }
-}
+/* ─── Reduced Motion ─── */
 
 @media (prefers-reduced-motion: reduce) {
   *,

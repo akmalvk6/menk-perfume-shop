@@ -1,8 +1,23 @@
 import { Search } from "lucide-react";
+import { motion } from "framer-motion";
 import { useMemo, useState } from "react";
-import ProductCard from "../components/ProductCard.jsx";
-import { categories } from "../data/fallbackProducts.js";
-import useProducts from "../hooks/useProducts.js";
+import AnimatedSection from "../components/AnimatedSection";
+import ProductCard from "../components/ProductCard";
+import { categories } from "../data/fallbackProducts";
+import useProducts from "../hooks/useProducts";
+
+const stagger = {
+  visible: { transition: { staggerChildren: 0.1 } },
+};
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.5, ease: "easeOut" },
+  },
+};
 
 export default function Products() {
   const { products, loading, error } = useProducts();
@@ -10,61 +25,102 @@ export default function Products() {
   const [search, setSearch] = useState("");
 
   const filtered = useMemo(() => {
-    return products.filter((product) => {
-      const matchesCategory = category === "All" || product.category === category;
-      const query = search.trim().toLowerCase();
-      const matchesSearch =
-        !query ||
-        product.name.toLowerCase().includes(query) ||
-        product.description.toLowerCase().includes(query);
-      return matchesCategory && matchesSearch;
+    const q = search.trim().toLowerCase();
+    return products.filter((p) => {
+      if (category !== "All" && p.category !== category) return false;
+      if (
+        q &&
+        !p.name.toLowerCase().includes(q) &&
+        !p.description?.toLowerCase().includes(q)
+      )
+        return false;
+      return true;
     });
-  }, [category, products, search]);
+  }, [products, category, search]);
 
   return (
-    <section className="shell py-10 text-white">
-      <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
-        <div>
-          <p className="text-sm font-semibold uppercase tracking-wide text-gold">Catalog</p>
-          <h1 className="font-display text-4xl font-semibold tracking-normal">Perfume, attar & oudh</h1>
-        </div>
-        <label className="relative block w-full md:max-w-sm">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-white/45" size={18} />
-          <input
-            className="input pl-10"
-            value={search}
-            onChange={(event) => setSearch(event.target.value)}
-            placeholder="Search products"
-          />
-        </label>
-      </div>
-      <div className="mt-6 flex flex-wrap gap-2">
-        {categories.map((item) => (
-          <button
-            key={item}
-            type="button"
-            className={`btn px-4 py-2 ${category === item ? "border border-white/20 bg-white text-velvet" : "border border-white/15 bg-white/10 text-white/70 hover:bg-white/15 hover:text-white"}`}
-            onClick={() => setCategory(item)}
+    <div className="pt-28 pb-20">
+      <div className="shell">
+        {/* Header */}
+        <AnimatedSection className="text-center mb-12">
+          <span className="badge mb-4">Catalog</span>
+          <h1 className="font-serif text-4xl md:text-5xl text-ink font-light mt-4">
+            Our Collection
+          </h1>
+          <div className="gold-line mt-6" />
+          <p className="mt-4 text-ink-light max-w-md mx-auto">
+            Explore our curated selection of perfumes, attars & oudh.
+          </p>
+        </AnimatedSection>
+
+        {/* Search & Filters */}
+        <AnimatedSection delay={0.1} className="max-w-2xl mx-auto mb-12">
+          <div className="relative mb-6">
+            <Search
+              size={18}
+              className="absolute left-4 top-1/2 -translate-y-1/2 text-ink-light/40"
+            />
+            <input
+              type="text"
+              placeholder="Search fragrances..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="input pl-11"
+            />
+          </div>
+
+          <div className="flex flex-wrap justify-center gap-3">
+            {categories.map((c) => (
+              <button
+                key={c}
+                onClick={() => setCategory(c)}
+                className={`px-5 py-2 rounded-full text-xs font-medium tracking-wider uppercase transition-all duration-300 ${
+                  c === category
+                    ? "bg-gold text-white shadow-gold"
+                    : "bg-white border border-ink/10 text-ink-light hover:border-gold/30 hover:text-gold"
+                }`}
+              >
+                {c}
+              </button>
+            ))}
+          </div>
+        </AnimatedSection>
+
+        {/* Error */}
+        {error && (
+          <div className="text-center py-4 mb-8 text-red-600 bg-red-50 rounded-lg border border-red-100 text-sm">
+            {error}
+          </div>
+        )}
+
+        {/* Loading */}
+        {loading ? (
+          <div className="text-center py-20 text-ink-light">
+            <div className="inline-block w-8 h-8 border-2 border-gold/20 border-t-gold rounded-full animate-spin mb-4" />
+            <p className="text-sm">Loading collection...</p>
+          </div>
+        ) : filtered.length === 0 ? (
+          <div className="text-center py-20 text-ink-light">
+            <p className="text-lg font-serif">No fragrances found</p>
+            <p className="text-sm mt-2">
+              Try adjusting your search or filters.
+            </p>
+          </div>
+        ) : (
+          <motion.div
+            initial="hidden"
+            animate="visible"
+            variants={stagger}
+            className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3"
           >
-            {item}
-          </button>
-        ))}
+            {filtered.map((product) => (
+              <motion.div key={product.id} variants={fadeUp}>
+                <ProductCard product={product} />
+              </motion.div>
+            ))}
+          </motion.div>
+        )}
       </div>
-      {error && <p className="mt-6 rounded-md border border-red-400/30 bg-red-500/10 p-3 text-sm text-red-100">{error}</p>}
-      {loading ? (
-        <p className="mt-10 text-white/60">Loading products...</p>
-      ) : (
-        <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {filtered.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
-        </div>
-      )}
-      {!loading && filtered.length === 0 && (
-        <p className="glass-panel mt-10 rounded-lg p-6 text-white/65">
-          No products match your search.
-        </p>
-      )}
-    </section>
+    </div>
   );
 }
