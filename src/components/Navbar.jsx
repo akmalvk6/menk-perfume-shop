@@ -1,6 +1,7 @@
-import { Menu, X } from "lucide-react";
+import { Menu, ShoppingBag, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
+import { useCart } from "../context/CartContext";
 
 const links = [
   { to: "/", label: "Home" },
@@ -13,6 +14,7 @@ export default function Navbar() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
+  const { cartCount } = useCart();
 
   /* Close mobile menu on route change */
   useEffect(() => {
@@ -56,15 +58,32 @@ export default function Navbar() {
           ))}
         </div>
 
-        {/* Mobile Hamburger */}
-        <button
-          className="md:hidden p-2 text-ink/60 hover:text-gold transition-colors"
-          onClick={() => setOpen(!open)}
-          aria-label={open ? "Close menu" : "Open menu"}
-          aria-expanded={open}
-        >
-          {open ? <X size={24} /> : <Menu size={24} />}
-        </button>
+        {/* Right side: Cart + Mobile menu */}
+        <div className="flex items-center gap-3">
+          {/* Cart Icon */}
+          <Link
+            to="/cart"
+            className="relative p-2 text-ink/50 hover:text-gold transition-colors"
+            aria-label="Shopping cart"
+          >
+            <ShoppingBag size={22} />
+            {cartCount > 0 && (
+              <span className="absolute -top-0.5 -right-0.5 w-5 h-5 rounded-full bg-gold text-white text-[10px] font-bold flex items-center justify-center leading-none">
+                {cartCount > 9 ? "9+" : cartCount}
+              </span>
+            )}
+          </Link>
+
+          {/* Mobile Hamburger */}
+          <button
+            className="md:hidden p-2 text-ink/60 hover:text-gold transition-colors"
+            onClick={() => setOpen(!open)}
+            aria-label={open ? "Close menu" : "Open menu"}
+            aria-expanded={open}
+          >
+            {open ? <X size={24} /> : <Menu size={24} />}
+          </button>
+        </div>
       </nav>
 
       {/* Mobile Menu */}
@@ -91,6 +110,24 @@ export default function Navbar() {
               {link.label}
             </NavLink>
           ))}
+          <NavLink
+            to="/cart"
+            onClick={() => setOpen(false)}
+            className={({ isActive }) =>
+              `py-3 px-4 text-sm font-medium tracking-wider uppercase transition-colors rounded-lg flex items-center gap-2 ${
+                isActive
+                  ? "text-gold bg-gold/5"
+                  : "text-ink/50 hover:text-gold hover:bg-gold/5"
+              }`
+            }
+          >
+            Cart
+            {cartCount > 0 && (
+              <span className="w-5 h-5 rounded-full bg-gold text-white text-[10px] font-bold flex items-center justify-center">
+                {cartCount}
+              </span>
+            )}
+          </NavLink>
         </div>
       </div>
     </header>

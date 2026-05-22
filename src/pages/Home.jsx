@@ -6,7 +6,7 @@ import AnimatedSection from "../components/AnimatedSection";
 import ParticleCanvas from "../components/ParticleCanvas";
 import ProductCard from "../components/ProductCard";
 import { fallbackProducts } from "../data/fallbackProducts";
-import { getFeaturedProducts } from "../firebase/products";
+import { getFeaturedProducts, getNewArrivals } from "../firebase/products";
 
 /* ─── Testimonials Data ─── */
 
@@ -53,11 +53,16 @@ const fadeUp = {
 
 export default function Home() {
   const [featured, setFeatured] = useState(fallbackProducts);
+  const [newArrivals, setNewArrivals] = useState([]);
 
   useEffect(() => {
     getFeaturedProducts()
       .then((data) => data.length > 0 && setFeatured(data))
       .catch(() => setFeatured(fallbackProducts));
+
+    getNewArrivals()
+      .then((data) => setNewArrivals(data))
+      .catch(() => setNewArrivals([]));
   }, []);
 
   return (
@@ -127,6 +132,50 @@ export default function Home() {
           </div>
         </motion.div>
       </section>
+
+      {/* ═══ New Arrivals ═══ */}
+      {newArrivals.length > 0 && (
+        <section className="py-24 md:py-32 bg-warm-white">
+          <div className="shell">
+            <AnimatedSection className="text-center mb-16">
+              <span className="badge !border-green-200 !bg-green-50 !text-green-700 mb-4">
+                Just Landed
+              </span>
+              <h2 className="font-serif text-4xl md:text-5xl text-ink font-light mt-4">
+                New Arrivals
+              </h2>
+              <div className="gold-line mt-6" />
+            </AnimatedSection>
+
+            <motion.div
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              variants={stagger}
+              className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3"
+            >
+              {newArrivals.map((product) => (
+                <motion.div key={product.id} variants={fadeUp}>
+                  <ProductCard product={product} />
+                </motion.div>
+              ))}
+            </motion.div>
+
+            <AnimatedSection className="text-center mt-12" delay={0.3}>
+              <Link
+                to="/products"
+                className="inline-flex items-center gap-2 text-sm font-medium tracking-wider uppercase text-gold hover:text-gold-dark transition-colors group"
+              >
+                View All Collections
+                <ArrowRight
+                  size={16}
+                  className="transition-transform group-hover:translate-x-1"
+                />
+              </Link>
+            </AnimatedSection>
+          </div>
+        </section>
+      )}
 
       {/* ═══ Featured Perfumes ═══ */}
       <section className="py-24 md:py-32">

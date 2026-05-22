@@ -3,7 +3,23 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { formatCurrency } from "../utils/format";
 
+/**
+ * Get the display price for the card.
+ * Prefers the lowest available discounted price; otherwise the base price.
+ */
+function getCardPrice(product) {
+  const original = product.price;
+  const discount = product.discountPrice;
+
+  if (discount && discount > 0 && discount < original) {
+    return { original, selling: discount, hasDiscount: true };
+  }
+  return { original, selling: original, hasDiscount: false };
+}
+
 export default function ProductCard({ product }) {
+  const { original, selling, hasDiscount } = getCardPrice(product);
+
   return (
     <motion.article
       whileHover={{ y: -6 }}
@@ -25,6 +41,11 @@ export default function ProductCard({ product }) {
               {product.category}
             </span>
           )}
+          {hasDiscount && (
+            <span className="absolute top-4 right-4 bg-red-500 text-white text-[10px] font-medium tracking-wider uppercase px-2.5 py-1 rounded-full">
+              {Math.round(((original - selling) / original) * 100)}% OFF
+            </span>
+          )}
         </div>
 
         {/* Content */}
@@ -32,9 +53,19 @@ export default function ProductCard({ product }) {
           <h3 className="font-serif text-xl text-ink mb-1 group-hover:text-gold transition-colors duration-300">
             {product.name}
           </h3>
-          <p className="text-gold font-medium text-lg mb-2">
-            {formatCurrency(product.price)}
-          </p>
+
+          {/* Price */}
+          <div className="flex items-center gap-2 mb-2">
+            <span className="text-gold font-medium text-lg">
+              {formatCurrency(selling)}
+            </span>
+            {hasDiscount && (
+              <span className="text-ink-light/40 text-sm line-through">
+                {formatCurrency(original)}
+              </span>
+            )}
+          </div>
+
           <p className="text-ink-light text-sm line-clamp-2 leading-relaxed mb-4">
             {product.description}
           </p>
